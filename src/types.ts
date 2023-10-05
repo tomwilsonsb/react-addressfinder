@@ -40,3 +40,7 @@ export interface AddressParams {
   post_box?: string;
   max?: number;
 }
+
+export interface LocationParams {
+  location_types?: string;
+}

@@ -9,7 +9,7 @@ import React, {
 
 import { AddressFinderWidgetSrc, ContainerPrefix, Country } from './constants';
 import { addressMetaToAddress } from './helpers';
-import { Address, AddressMeta, AddressParams } from './types';
+import { Address, AddressMeta, AddressParams, LocationParams } from './types';
 
 import './widget.css';
 
@@ -26,6 +26,8 @@ interface WidgetInputProps
   hoverClassName?: string;
   raw?: boolean;
   addressParams?: AddressParams;
+  locationParams?: LocationParams;
+  showLocations?: boolean;
 }
 
 export type Props = WidgetInputProps;
@@ -41,7 +43,9 @@ const WidgetInput: FC<WidgetInputProps> = ({
   hoverClassName = 'address-autocomplete__suggestions__item--active',
   addressFinderKey,
   raw = false,
+  showLocations = false,
   addressParams = {},
+  locationParams = {},
   ...props
 }) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
@@ -81,6 +85,8 @@ const WidgetInput: FC<WidgetInputProps> = ({
           manual_style: true,
           container: container || document.getElementById(`${ContainerPrefix}-${id}`),
           address_params: addressParams,
+          location_params: locationParams,
+          show_locations: showLocations,
           max_results: 5,
         },
       );
