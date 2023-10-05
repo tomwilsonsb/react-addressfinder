@@ -16,7 +16,8 @@ import './widget.css';
 interface WidgetInputProps
   extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
   id: string;
-  onSelected: (fullAddress: string, address: Address | AddressMeta) => void;
+  onSelected?: (fullAddress: string, address: Address | AddressMeta) => void;
+  onSelectedLocation?: (fullLocation: string, address: Address | AddressMeta) => void;
   addressFinderKey: string;
   country?: Country;
   container?: HTMLElement;
@@ -28,6 +29,7 @@ interface WidgetInputProps
   addressParams?: AddressParams;
   locationParams?: LocationParams;
   showLocations?: boolean;
+  showAddresses?: boolean;
 }
 
 export type Props = WidgetInputProps;
@@ -37,6 +39,7 @@ const WidgetInput: FC<WidgetInputProps> = ({
   country = Country.AU,
   container,
   onSelected,
+  onSelectedLocation,
   inputClassName,
   listClassName = 'address-autocomplete__suggestions',
   itemClassName = 'address-autocomplete__suggestions__item',
@@ -44,6 +47,7 @@ const WidgetInput: FC<WidgetInputProps> = ({
   addressFinderKey,
   raw = false,
   showLocations = false,
+  showAddresses = true,
   addressParams = {},
   locationParams = {},
   ...props
@@ -87,6 +91,7 @@ const WidgetInput: FC<WidgetInputProps> = ({
           address_params: addressParams,
           location_params: locationParams,
           show_locations: showLocations,
+          show_addresses: showAddresses,
           max_results: 5,
         },
       );
@@ -98,7 +103,17 @@ const WidgetInput: FC<WidgetInputProps> = ({
           addressData = addressMetaToAddress(metaData, country);
         }
 
-        onSelected(fullAddress, addressData);
+        onSelected?.(fullAddress, addressData);
+      });
+
+      widget.on('location:select', (fullLocation, metaData) => {
+        const addressData: Address | AddressMeta = { ...metaData, country };
+
+        // if (!raw) {
+        //   addressData = addressMetaToLocation(metaData, country);
+        // }
+
+        onSelectedLocation?.(fullLocation, addressData);
       });
     }
   }, [id, country, scriptLoaded]);
